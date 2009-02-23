@@ -1,0 +1,25 @@
+## Interface: 30000
+
+## Title: LinkenLog
+## Notes: Trade link manager
+## Author: Tekkub Stoutwrithe
+## Version: Alpha
+## X-Website: http://www.tekkub.net/
+## X-Email: tekkub-wow@googlegroups.com
+## X-Category: Tradeskills
+
+## SavedVariables: LinkenLogDB
+
+## OptionalDeps: tekDebug, tekErr
+
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: delayed
+## X-LoadOn-Slash: /linken
+## X-LoadOn-LDB-Launcher: Interface\icons\Spell_Nature_GroundingTotem
+
+LibStub.lua
+tinyGratuity.lua
+tekIDmemo.lua
+tekKonfigButton.lua
+
+LinkenLog.lua
