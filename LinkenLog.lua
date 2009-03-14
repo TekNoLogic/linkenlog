@@ -33,7 +33,6 @@ function f:ADDON_LOADED(event, addon)
 
 	local factionrealm = UnitFactionGroup("player").. " ".. GetRealmName()
 
---~ 	/spew LinkenLogDB["Alliance Area 52"]
 	LinkenLogDB = LinkenLogDB or {}
 	LinkenLogDB[factionrealm] = LinkenLogDB[factionrealm] or {}
 	db = LinkenLogDB[factionrealm]
@@ -41,8 +40,6 @@ function f:ADDON_LOADED(event, addon)
 		local name = GetSpellInfo(spellid)
 		db[name] = db[name] or {}
 	end
-
-	-- Do anything you need to do after addon has loaded
 
 --~ 	LibStub("tekKonfig-AboutPanel").new("AddonTemplate", "AddonTemplate") -- Make first arg nil if no parent config panel
 
@@ -54,7 +51,6 @@ end
 
 
 function f:PLAYER_LOGIN()
---~ 	self:RegisterEvent("PLAYER_LOGOUT")
 	self:RegisterEvent("CHAT_MSG_ADDON")
 
 	announce()
@@ -66,11 +62,9 @@ end
 
 function f:CHAT_MSG_ADDON(event, prefix, message, channel, sender, ...)
 	if prefix ~= "linken" then return end
---~ 	local level, name = message:match("|Htrade:%d+:(%d+):.+|h%[(%w+)%]|h|r")
 	local name = message:match("|Htrade:.+|h%[(%w+)%]|h|r")
 	local timestamp = date("%m/%d %H:%M")
 	local patch = GetBuildInfo()
---~ 	db[name][sender] = message
 	db[name][sender] = string.join("\t", patch, timestamp, message)
 end
 
@@ -213,10 +207,7 @@ end)
 -----------------------------
 
 SLASH_LINKENLOG1 = "/linken"
-SlashCmdList.LINKENLOG = function(msg)
-	-- Do crap here
-	ShowUIPanel(panel)
-end
+SlashCmdList.LINKENLOG = function(msg) ShowUIPanel(panel) end
 
 
 ----------------------------------------
@@ -225,4 +216,4 @@ end
 
 local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
 local dataobj = ldb:GetDataObjectByName("LinkenLog") or ldb:NewDataObject("LinkenLog", {type = "launcher", icon = "Interface\\Icons\\Spell_Nature_GroundingTotem"})
-dataobj.OnClick = function() ShowUIPanel(panel) end
+dataobj.OnClick = SlashCmdList.LINKENLOG
