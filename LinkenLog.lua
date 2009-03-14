@@ -102,8 +102,16 @@ local function OnClick(self)
 end
 
 
-local rows, lastbutt = {}
 local NUMROWS = 22
+local SCROLLSTEP = math.floor(NUMROWS/3)
+local scrollbox = CreateFrame("Frame", nil, panel)
+scrollbox:SetPoint("TOPLEFT", 0, -78)
+scrollbox:SetPoint("BOTTOMRIGHT", -43, 82)
+local scroll = LibStub("tekKonfig-Scroll").new(scrollbox, 0, SCROLLSTEP)
+
+
+local rows, lastbutt = {}
+local function OnMouseWheel(self, val) scroll:SetValue(scroll:GetValue() - val*SCROLLSTEP) end
 for i=1,NUMROWS do
 	local butt = CreateFrame("Button", nil, panel)
 	butt:SetWidth(318) butt:SetHeight(16)
@@ -118,9 +126,11 @@ for i=1,NUMROWS do
 	butt.detail = detail
 
 	local time = butt:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-	time:SetPoint("RIGHT", -5, 0)
+	time:SetPoint("RIGHT", -25, 0)
 	butt.time = time
 
+	butt:EnableMouseWheel(true)
+	butt:SetScript("OnMouseWheel", OnMouseWheel)
 	butt:SetScript("OnClick", OnClick)
 
 	table.insert(rows, butt)
@@ -128,15 +138,17 @@ for i=1,NUMROWS do
 end
 
 
-panel:SetScript("OnShow", function(self)
+local orig = scroll:GetScript("OnValueChanged")
+scroll:SetScript("OnValueChanged", function(self, offset, ...)
+	offset = math.floor(offset)
 	local i, mypatch = 0, GetBuildInfo()
 	for _,spellid in pairs(crafts) do
 		local trade = GetSpellInfo(spellid)
 		for name,val in pairs(db[trade]) do
 			i = i + 1
-			if i <= NUMROWS then
+			if (i-offset) > 0 and (i-offset) <= NUMROWS then
 				local patch, timestamp, source, note, link = string.split("\t", val)
-				local row = rows[i]
+				local row = rows[i-offset]
 				local skill = link:match("|Htrade:%d+:(%d+):")
 				row.name:SetText(name)
 				row.detail:SetText(trade.." ("..skill..")")
@@ -146,9 +158,19 @@ panel:SetScript("OnShow", function(self)
 			end
 		end
 	end
-	if i < NUMROWS then
-		for j=(i+1),10 do rows[j]:Hide() end
+	if (i-offset) < NUMROWS then
+		for j=(i-offset+1),NUMROWS do rows[j]:Hide() end
 	end
+
+	return orig(self, offset, ...)
+end)
+
+local firstshow = true
+panel:SetScript("OnShow", function(self)
+	local i = 0
+	for _,vals in pairs(db) do for name,val in pairs(vals) do i = i + 1 end end
+	scroll:SetMinMaxValues(0, math.max(0, i-NUMROWS))
+	if firstshow then scroll:SetValue(0); firstshow = nil end
 end)
 
 

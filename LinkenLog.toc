@@ -19,6 +19,7 @@
 
 LibStub.lua
 tekKonfigAboutPanel.lua
+tekKonfigScroll.lua
 tekPanel.lua
 
 LinkenLog.lua
