@@ -41,7 +41,7 @@ function f:ADDON_LOADED(event, addon)
 		db[name] = db[name] or {}
 	end
 
---~ 	LibStub("tekKonfig-AboutPanel").new("AddonTemplate", "AddonTemplate") -- Make first arg nil if no parent config panel
+	LibStub("tekKonfig-AboutPanel").new(nil, "LinkenLog") -- Make first arg nil if no parent config panel
 
 	self:UnregisterEvent("ADDON_LOADED")
 	self.ADDON_LOADED = nil
