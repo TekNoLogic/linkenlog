@@ -18,8 +18,5 @@
 ## X-LoadOn-LDB-Launcher: Interface\icons\Spell_Nature_GroundingTotem
 
 LibStub.lua
-tinyGratuity.lua
-tekIDmemo.lua
-tekKonfigButton.lua
 
 LinkenLog.lua
