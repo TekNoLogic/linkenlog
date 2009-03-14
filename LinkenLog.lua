@@ -77,7 +77,9 @@ function f:CHAT_MSG_ADDON(event, prefix, message, channel, sender, ...)
 --~ 	local level, name = message:match("|Htrade:%d+:(%d+):.+|h%[(%w+)%]|h|r")
 	local name = message:match("|Htrade:.+|h%[(%w+)%]|h|r")
 	print(sender, message, name, ...)
-	db[name][sender] = message
+	local timestamp = date("%m/%d %H:%M")
+	local patch = GetBuildInfo()
+	db[name][sender] = string.join("\t", patch, timestamp, message)
 end
 
 
@@ -177,6 +179,10 @@ for i=1,NUMROWS do
 	detail:SetPoint("LEFT", 100, 0)
 	butt.detail = detail
 
+	local time = butt:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+	time:SetPoint("RIGHT", -5, 0)
+	butt.time = time
+
 	butt:SetScript("OnClick", function(self)
 		local link = self.link:match("|H(trade:.+)|h.+|h|r")
 		SetItemRef(link, self.link, "LeftButton")
@@ -187,16 +193,18 @@ for i=1,NUMROWS do
 end
 
 panel:SetScript("OnShow", function(self)
-	local i = 0
+	local i, mypatch = 0, GetBuildInfo()
 	for _,spellid in pairs(crafts) do
 		local trade = GetSpellInfo(spellid)
 		for name,val in pairs(db[trade]) do
 			i = i + 1
 			if i <= NUMROWS then
+				local patch, timestamp, link = string.split("\t", val)
 				local row = rows[i]
-				local skill = val:match("|Htrade:%d+:(%d+):")
+				local skill = link:match("|Htrade:%d+:(%d+):")
 				row.name:SetText(name)
 				row.detail:SetText(trade.." ("..skill..")")
+				row.time:SetText((patch ~= mypatch and "|cffff0000" or "")..timestamp)
 				row.link = val
 				row:Show()
 			end
