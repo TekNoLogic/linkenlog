@@ -170,8 +170,9 @@ for i=1,NUMROWS do
 	butt.time = time
 
 	butt:SetScript("OnClick", function(self)
-		local link = self.link:match("|H(trade:.+)|h.+|h|r")
-		SetItemRef(link, self.link, "LeftButton")
+		local patch, timestamp, tradelink = string.split("\t", self.link)
+		local link = tradelink:match("|H(trade:.+)|h.+|h|r")
+		SetItemRef(link, tradelink, "LeftButton")
 	end)
 
 	table.insert(rows, butt)
