@@ -13,18 +13,10 @@ local function announce()
 		local name = GetSpellInfo(spellid)
 		local spellink, tradelink = GetSpellLink(name)
 		if tradelink then
-			print("Found craft", name, tradelink)
 			SendAddonMessage("linken", tradelink, "GUILD")
 		end
 	end
 end
-
-
-------------------------------
---      Util Functions      --
-------------------------------
-
-local function Print(...) print("|cFF33FF99Linken Log|r:", ...) end
 
 
 -----------------------------
@@ -76,9 +68,9 @@ function f:CHAT_MSG_ADDON(event, prefix, message, channel, sender, ...)
 	if prefix ~= "linken" then return end
 --~ 	local level, name = message:match("|Htrade:%d+:(%d+):.+|h%[(%w+)%]|h|r")
 	local name = message:match("|Htrade:.+|h%[(%w+)%]|h|r")
-	print(sender, message, name, ...)
 	local timestamp = date("%m/%d %H:%M")
 	local patch = GetBuildInfo()
+--~ 	db[name][sender] = message
 	db[name][sender] = string.join("\t", patch, timestamp, message)
 end
 
