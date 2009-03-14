@@ -69,63 +69,7 @@ function f:CHAT_MSG_ADDON(event, prefix, message, channel, sender, ...)
 end
 
 
-
-
-local panel = CreateFrame("Frame", "LinkenLogFrame", UIParent)
-panel:SetWidth(384) panel:SetHeight(512)
-panel:SetPoint("TOPLEFT", 0, -104)
-panel:SetToplevel(true)
-
-panel:SetAttribute("UIPanelLayout-defined", true)
-panel:SetAttribute("UIPanelLayout-enabled", true)
-panel:SetAttribute("UIPanelLayout-area", "left")
-panel:SetAttribute("UIPanelLayout-whileDead", true)
-table.insert(UISpecialFrames, "LinkenLogFrame")
-
-panel:Hide()
-
---~ 		<HitRectInsets>
---~ 			<AbsInset left="0" right="30" top="0" bottom="75"/>
---~ 		</HitRectInsets>
-
-
-local topleft = panel:CreateTexture(nil, "BACKGROUND")
-topleft:SetTexture([[Interface\PaperDollInfoFrame\UI-Character-General-TopLeft]])
-topleft:SetWidth(256) topleft:SetHeight(256)
-topleft:SetPoint("TOPLEFT", 2, -1)
-
-local topright = panel:CreateTexture(nil, "BACKGROUND")
-topright:SetTexture([[Interface\PaperDollInfoFrame\UI-Character-General-TopRight]])
-topright:SetWidth(128) topright:SetHeight(256)
-topright:SetPoint("TOPLEFT", 258, -1)
-
-local bottomleft = panel:CreateTexture(nil, "BACKGROUND")
-bottomleft:SetTexture([[Interface\PaperDollInfoFrame\UI-Character-General-BottomLeft]])
-bottomleft:SetWidth(256) bottomleft:SetHeight(256)
-bottomleft:SetPoint("TOPLEFT", 2, -257)
-
-local bottomright = panel:CreateTexture(nil, "BACKGROUND")
-bottomright:SetTexture([[Interface\PaperDollInfoFrame\UI-Character-General-BottomRight]])
-bottomright:SetWidth(128) bottomright:SetHeight(256)
-bottomright:SetPoint("TOPLEFT", 258, -257)
-
-local title = panel:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
-title:SetText("Linken Log")
-title:SetPoint("CENTER", 6, 232)
-
-
-local portrait = panel:CreateTexture(nil, "ARTWORK")
-portrait:SetWidth(60) portrait:SetHeight(60)
-portrait:SetPoint("TOPLEFT", 7, -6)
-SetPortraitTexture(portrait, "player")
-
-panel:SetScript("OnEvent", function(self, event, unit) if unit == "player" then SetPortraitTexture(portrait, unit) end end)
-panel:RegisterEvent("UNIT_PORTRAIT_UPDATE")
-
-
-local close = CreateFrame("Button", nil, panel, "UIPanelCloseButton")
-close:SetPoint("CENTER", panel, "TOPRIGHT", -44, -25)
-close:SetScript("OnClick", function() HideUIPanel(panel) end)
+local panel = LibStub("tekPanel").new("LinkenLogFrame", "Linken Log")
 
 
 local lasticon
