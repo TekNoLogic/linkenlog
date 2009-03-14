@@ -65,7 +65,7 @@ function f:CHAT_MSG_ADDON(event, prefix, message, channel, sender, ...)
 	local name = message:match("|Htrade:.+|h%[(%w+)%]|h|r")
 	local timestamp = date("%m/%d %H:%M")
 	local patch = GetBuildInfo()
-	db[name][sender] = string.join("\t", patch, timestamp, message)
+	db[name][sender] = string.join("\t", patch, timestamp, "Addon channel", " ", message)
 end
 
 
@@ -94,6 +94,14 @@ for _,spellid in pairs(crafts) do
 	lasticon = icon
 end
 
+
+local function OnClick(self)
+	local patch, timestamp, source, note, tradelink = string.split("\t", self.link)
+	local link = tradelink:match("|H(trade:.+)|h.+|h|r")
+	SetItemRef(link, tradelink, "LeftButton")
+end
+
+
 local rows, lastbutt = {}
 local NUMROWS = 22
 for i=1,NUMROWS do
@@ -113,15 +121,12 @@ for i=1,NUMROWS do
 	time:SetPoint("RIGHT", -5, 0)
 	butt.time = time
 
-	butt:SetScript("OnClick", function(self)
-		local patch, timestamp, tradelink = string.split("\t", self.link)
-		local link = tradelink:match("|H(trade:.+)|h.+|h|r")
-		SetItemRef(link, tradelink, "LeftButton")
-	end)
+	butt:SetScript("OnClick", OnClick)
 
 	table.insert(rows, butt)
 	lastbutt = butt
 end
+
 
 panel:SetScript("OnShow", function(self)
 	local i, mypatch = 0, GetBuildInfo()
@@ -130,7 +135,7 @@ panel:SetScript("OnShow", function(self)
 		for name,val in pairs(db[trade]) do
 			i = i + 1
 			if i <= NUMROWS then
-				local patch, timestamp, link = string.split("\t", val)
+				local patch, timestamp, source, note, link = string.split("\t", val)
 				local row = rows[i]
 				local skill = link:match("|Htrade:%d+:(%d+):")
 				row.name:SetText(name)
