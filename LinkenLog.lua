@@ -52,6 +52,7 @@ end
 
 function f:PLAYER_LOGIN()
 	self:RegisterEvent("CHAT_MSG_ADDON")
+	self:RegisterEvent("CHAT_MSG_SYSTEM")
 
 	announce()
 
@@ -66,6 +67,11 @@ function f:CHAT_MSG_ADDON(event, prefix, message, channel, sender, ...)
 	local timestamp = date("%m/%d %H:%M")
 	local patch = GetBuildInfo()
 	db[name][sender] = string.join("\t", patch, timestamp, "Addon channel", " ", message)
+end
+
+
+function f:CHAT_MSG_SYSTEM(event, msg)
+	if string.find(msg, L["has come online"]) then announce() end
 end
 
 
