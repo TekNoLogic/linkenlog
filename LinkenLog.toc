@@ -1,6 +1,6 @@
 ## Interface: 30000
 
-## Title: LinkenLog
+## Title: Linken Log
 ## Notes: Trade link manager
 ## Author: Tekkub Stoutwrithe
 ## Version: Alpha
