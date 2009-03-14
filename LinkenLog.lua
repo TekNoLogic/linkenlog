@@ -72,27 +72,27 @@ end
 local panel = LibStub("tekPanel").new("LinkenLogFrame", "Linken Log")
 
 
-local lasticon
-for _,spellid in pairs(crafts) do
-	local name, _, texture = GetSpellInfo(spellid)
+--~ local lasticon
+--~ for _,spellid in pairs(crafts) do
+--~ 	local name, _, texture = GetSpellInfo(spellid)
 
-	local icon = CreateFrame("Button", nil, panel)
-	icon:SetWidth(24) icon:SetHeight(24)
-	icon:SetNormalTexture(texture)
+--~ 	local icon = CreateFrame("Button", nil, panel)
+--~ 	icon:SetWidth(24) icon:SetHeight(24)
+--~ 	icon:SetNormalTexture(texture)
 
-	local back = icon:CreateTexture(nil, "BACKGROUND")
-	back:SetTexture([[Interface\SpellBook\SpellBook-SkillLineTab]])
-	back:SetTexCoord(0, 7/8, 0, 7/8)
-	back:SetWidth(36*24/20) back:SetHeight(36*24/20)
-	back:SetPoint("LEFT", -2, 0)
+--~ 	local back = icon:CreateTexture(nil, "BACKGROUND")
+--~ 	back:SetTexture([[Interface\SpellBook\SpellBook-SkillLineTab]])
+--~ 	back:SetTexCoord(0, 7/8, 0, 7/8)
+--~ 	back:SetWidth(36*24/20) back:SetHeight(36*24/20)
+--~ 	back:SetPoint("LEFT", -2, 0)
 
-	if lasticon then
-		icon:SetPoint("TOP", lasticon, "BOTTOM", 0, -16)
-	else
-		icon:SetPoint("TOPLEFT", panel, "TOPRIGHT", -33, -50)
-	end
-	lasticon = icon
-end
+--~ 	if lasticon then
+--~ 		icon:SetPoint("TOP", lasticon, "BOTTOM", 0, -16)
+--~ 	else
+--~ 		icon:SetPoint("TOPLEFT", panel, "TOPRIGHT", -33, -50)
+--~ 	end
+--~ 	lasticon = icon
+--~ end
 
 
 local function OnClick(self)
