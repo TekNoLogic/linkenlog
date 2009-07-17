@@ -53,6 +53,7 @@ end
 function f:PLAYER_LOGIN()
 	self:RegisterEvent("CHAT_MSG_ADDON")
 	self:RegisterEvent("CHAT_MSG_SYSTEM")
+	self:RegisterEvent("CHAT_MSG_GUILD")
 
 	announce()
 
@@ -60,6 +61,14 @@ function f:PLAYER_LOGIN()
 	self.PLAYER_LOGIN = nil
 end
 
+function f:CHAT_MSG_GUILD(event, message, sender, ...)
+   local link, name = message:match("(|c[^|]+|Htrade:.+|h%[(%w+)%]|h|r)")
+   if link then
+      local timestamp = date("%m/%d %H:%M")
+      local patch = GetBuildInfo()
+      db[name][sender] = string.join("\t", patch, timestamp, "Guild chat", message, link)
+   end
+end
 
 function f:CHAT_MSG_ADDON(event, prefix, message, channel, sender, ...)
 	if prefix ~= "linken" then return end
@@ -115,6 +124,11 @@ scrollbox:SetPoint("TOPLEFT", 0, -78)
 scrollbox:SetPoint("BOTTOMRIGHT", -43, 82)
 local scroll = LibStub("tekKonfig-Scroll").new(scrollbox, 0, SCROLLSTEP)
 
+local function HideTooltip() GameTooltip:Hide() end
+local function ShowTooltip(self)
+	GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+	GameTooltip:SetText("Click and press Ctrl-C to copy")
+end
 
 local rows, lastbutt = {}
 local function OnMouseWheel(self, val) scroll:SetValue(scroll:GetValue() - val*SCROLLSTEP) end
@@ -138,6 +152,13 @@ for i=1,NUMROWS do
 	butt:EnableMouseWheel(true)
 	butt:SetScript("OnMouseWheel", OnMouseWheel)
 	butt:SetScript("OnClick", OnClick)
+	butt:SetScript("OnLeave", function() GameTooltip:Hide() end)
+	butt:SetScript("OnEnter", function(self)
+		if self.note ~= " " then
+			GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
+			GameTooltip:SetText(self.note)
+		end
+	end)
 
 	table.insert(rows, butt)
 	lastbutt = butt
@@ -157,6 +178,7 @@ scroll:SetScript("OnValueChanged", function(self, offset, ...)
 				local row = rows[i-offset]
 				local skill = link:match("|Htrade:%d+:(%d+):")
 				row.name:SetText(name)
+				row.note = note
 				row.detail:SetText(trade.." ("..skill..")")
 				row.time:SetText((patch ~= mypatch and "|cffff0000" or "")..timestamp)
 				row.link = val
