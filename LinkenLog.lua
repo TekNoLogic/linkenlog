@@ -62,12 +62,13 @@ function f:PLAYER_LOGIN()
 end
 
 function f:CHAT_MSG_GUILD(event, message, sender, ...)
-   local link, name = message:match("(|c[^|]+|Htrade:.+|h%[(%w+)%]|h|r)")
-   if link then
-      local timestamp = date("%m/%d %H:%M")
-      local patch = GetBuildInfo()
-      db[name][sender] = string.join("\t", patch, timestamp, "Guild chat", message, link)
-   end
+	if sender == GetUnitName("player", false) then return end
+	local link, name = message:match("(|c[^|]+|Htrade:.+|h%[(%w+)%]|h|r)")
+	if link then
+		local timestamp = date("%m/%d %H:%M")
+		local patch = GetBuildInfo()
+		db[name][sender] = string.join("\t", patch, timestamp, "Guild chat", message, link)
+	end
 end
 
 function f:CHAT_MSG_ADDON(event, prefix, message, channel, sender, ...)
