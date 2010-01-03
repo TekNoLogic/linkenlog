@@ -73,6 +73,7 @@ function f:CHAT_MSG_GUILD(event, message, sender, ...)
 	if sender == GetUnitName("player", false) then return end
 	local link, name = message:match("(|c[^|]+|Htrade:.+|h%[(%w+)%]|h|r)")
 	if link then
+		message = message:gsub("|cff......|Htrade:.+|h.+|h|r", ""):trim() ~= "" and ("<"..GetGuildInfo("player").."> "..message) or " "
 		Save(name, sender, "Guild chat", message, link)
 	end
 end
