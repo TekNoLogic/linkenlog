@@ -4,7 +4,7 @@
 ----------------------
 
 local L = setmetatable({}, {__index=function(t,i) return i end})
-local db
+local db, Refresh, Resize
 
 local crafts = {2259, 2018, 7411, 4036, 45357, 25229, 2108, 3908, 2550}
 
@@ -61,22 +61,26 @@ function f:PLAYER_LOGIN()
 	self.PLAYER_LOGIN = nil
 end
 
+local mypatch = GetBuildInfo()
+local function Save(name, sender, source, message, link)
+	local timestamp = date("%m/%d %H:%M")
+	db[name][sender] = string.join("\t", mypatch, timestamp, source, message, link)
+	Resize()
+	Refresh()
+end
+
 function f:CHAT_MSG_GUILD(event, message, sender, ...)
 	if sender == GetUnitName("player", false) then return end
 	local link, name = message:match("(|c[^|]+|Htrade:.+|h%[(%w+)%]|h|r)")
 	if link then
-		local timestamp = date("%m/%d %H:%M")
-		local patch = GetBuildInfo()
-		db[name][sender] = string.join("\t", patch, timestamp, "Guild chat", message, link)
+		Save(name, sender, "Guild chat", message, link)
 	end
 end
 
 function f:CHAT_MSG_ADDON(event, prefix, message, channel, sender, ...)
 	if prefix ~= "linken" then return end
-	local name = message:match("|Htrade:.+|h%[(%w+)%]|h|r")
-	local timestamp = date("%m/%d %H:%M")
-	local patch = GetBuildInfo()
-	db[name][sender] = string.join("\t", patch, timestamp, "Addon channel", " ", message)
+	local name = message:match("|Htrade:.+|h%[(.+)%]|h|r")
+	Save(name, sender, "Addon channel", " ", message)
 end
 
 
@@ -166,10 +170,11 @@ for i=1,NUMROWS do
 end
 
 
-local orig = scroll:GetScript("OnValueChanged")
-scroll:SetScript("OnValueChanged", function(self, offset, ...)
-	offset = math.floor(offset)
-	local i, mypatch = 0, GetBuildInfo()
+local offset = 0
+function Refresh()
+	if not panel:IsVisible() then return end
+
+	local i = 0
 	for _,spellid in pairs(crafts) do
 		local trade = GetSpellInfo(spellid)
 		for name,val in pairs(db[trade]) do
@@ -190,16 +195,25 @@ scroll:SetScript("OnValueChanged", function(self, offset, ...)
 	if (i-offset) < NUMROWS then
 		for j=(i-offset+1),NUMROWS do rows[j]:Hide() end
 	end
+end
 
+local orig = scroll:GetScript("OnValueChanged")
+scroll:SetScript("OnValueChanged", function(self, newoffset, ...)
+	offset = math.floor(newoffset)
+	Refresh()
 	return orig(self, offset, ...)
 end)
 
 local firstshow = true
-panel:SetScript("OnShow", function(self)
+function Resize()
 	local i = 0
 	for _,vals in pairs(db) do for name,val in pairs(vals) do i = i + 1 end end
 	scroll:SetMinMaxValues(0, math.max(0, i-NUMROWS))
+end
+panel:SetScript("OnShow", function(self)
+	Resize()
 	if firstshow then scroll:SetValue(0); firstshow = nil end
+	Refresh()
 end)
 
 
