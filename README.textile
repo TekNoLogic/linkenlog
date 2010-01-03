@@ -1,0 +1,9 @@
+LinkenLog is a tradeskill link tracker.  It will automatically exchange links with other LL users, track your alts' tradeskills, and monitor guild chat for links.
+
+LL can be accessed via its LDB launcher or the command @/linken@.  Links listed with a red date are from a previous patch and may not be accurate.
+
+h2. Links
+
+<b>Visit "my site":http://tekkub.net/ for more great addons<br>
+Please report all bugs and feature requests to my "Github tracker":http://github.com/tekkub/LinkenLog/issues<br>
+Please direct all feedback and questions to my "Google Groups":http://groups-beta.google.com/group/tekkub-wow mailinglist.</b>
